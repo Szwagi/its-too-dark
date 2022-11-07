@@ -19,6 +19,8 @@ public Plugin myinfo =
 #define MENU_DEC_AUTOEXPOSURE_MIN "MENU_DEC_AUTOEXPOSURE_MIN"
 #define MENU_INC_AUTOEXPOSURE_MAX "MENU_INC_AUTOEXPOSURE_MAX"
 #define MENU_DEC_AUTOEXPOSURE_MAX "MENU_DEC_AUTOEXPOSURE_MAX"
+#define MENU_INC_RATE "MENU_INC_RATE"
+#define MENU_DEC_RATE "MENU_DEC_RATE"
 
 int gI_Tonemap[MAXPLAYERS + 1];
 ConVar gCV_sv_skyname;
@@ -173,10 +175,11 @@ void DisplayTonemapMenu(int client, int firstItem = 0)
         Menu menu = new Menu(TonemapMenuHandler);
 
         char title[128];
-        FormatEx(title, sizeof(title), "%s: %.3f\n%s: %.3f\n%s: %.3f\n ",
+        FormatEx(title, sizeof(title), "%s: %.3f\n%s: %.3f\n%s: %.3f\n%s: %.3f\n ",
             "Bloom Scale", GetEntPropFloat(tonemap, Prop_Send, "m_flCustomBloomScale"),
             "Auto Exposure Min", GetEntPropFloat(tonemap, Prop_Send, "m_flCustomAutoExposureMin"),
-            "Auto Exposure Max", GetEntPropFloat(tonemap, Prop_Send, "m_flCustomAutoExposureMax"));
+            "Auto Exposure Max", GetEntPropFloat(tonemap, Prop_Send, "m_flCustomAutoExposureMax"),
+            "Auto Exposure Rate", GetEntPropFloat(tonemap, Prop_Send, "m_flTonemapRate"));
 
         menu.SetTitle(title);
 
@@ -186,6 +189,8 @@ void DisplayTonemapMenu(int client, int firstItem = 0)
         menu.AddItem(MENU_DEC_AUTOEXPOSURE_MIN, "Auto Exposure Min -");
         menu.AddItem(MENU_INC_AUTOEXPOSURE_MAX, "Auto Exposure Max +");
         menu.AddItem(MENU_DEC_AUTOEXPOSURE_MAX, "Auto Exposure Max -");
+        menu.AddItem(MENU_INC_RATE, "Auto Exposure Rate +");
+        menu.AddItem(MENU_DEC_RATE, "Auto Exposure Rate -");
 
         menu.DisplayAt(client, firstItem, 0);
     }
@@ -253,7 +258,7 @@ public int TonemapMenuHandler(Menu menu, MenuAction action, int param1, int para
                 {
                     float oldValue = GetEntPropFloat(tonemap, Prop_Send, "m_flCustomAutoExposureMax");
                     float newValue = IncValueAndRound(oldValue, 0.1);
-                    newValue = Clamp(newValue, 0.0, 100.0);
+                    newValue = Clamp(newValue, 0.1, 100.0);
 
                     SetEntProp(tonemap, Prop_Send, "m_bUseCustomAutoExposureMax", 1);
                     SetEntPropFloat(tonemap, Prop_Send, "m_flCustomAutoExposureMax", newValue);
@@ -262,10 +267,26 @@ public int TonemapMenuHandler(Menu menu, MenuAction action, int param1, int para
                 {
                     float oldValue = GetEntPropFloat(tonemap, Prop_Send, "m_flCustomAutoExposureMax");
                     float newValue = IncValueAndRound(oldValue, -0.1);
-                    newValue = Clamp(newValue, 0.0, 100.0);
+                    newValue = Clamp(newValue, 0.1, 100.0);
 
                     SetEntProp(tonemap, Prop_Send, "m_bUseCustomAutoExposureMax", 1);
                     SetEntPropFloat(tonemap, Prop_Send, "m_flCustomAutoExposureMax", newValue);
+                }
+                else if (StrEqual(info, MENU_INC_RATE))
+                {
+                    float oldValue = GetEntPropFloat(tonemap, Prop_Send, "m_flTonemapRate");
+                    float newValue = IncValueAndRound(oldValue, 0.1);
+                    newValue = Clamp(newValue, 0.1, 100.0);
+
+                    SetEntPropFloat(tonemap, Prop_Send, "m_flTonemapRate", newValue);
+                }
+                else if (StrEqual(info, MENU_DEC_RATE))
+                {
+                    float oldValue = GetEntPropFloat(tonemap, Prop_Send, "m_flTonemapRate");
+                    float newValue = IncValueAndRound(oldValue, -0.1);
+                    newValue = Clamp(newValue, 0.1, 100.0);
+
+                    SetEntPropFloat(tonemap, Prop_Send, "m_flTonemapRate", newValue);
                 }
             }
         }
