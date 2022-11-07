@@ -134,12 +134,12 @@ int GetOrCreateTonemap(int client)
                     SetEntPropFloat(tonemap, Prop_Send, "m_flCustomBloomScaleMinimum", GetEntPropFloat(master, Prop_Send, "m_flCustomBloomScaleMinimum"));
                 }
 
-                if (SetEntProp(tonemap, Prop_Send, "m_bUseCustomAutoExposureMin", GetEntProp(master, Prop_Send, "m_bUseCustomAutoExposureMin")))
+                if (GetEntProp(master, Prop_Send, "m_bUseCustomAutoExposureMin"))
                 {
                     SetEntPropFloat(tonemap, Prop_Send, "m_flCustomAutoExposureMin", GetEntPropFloat(master, Prop_Send, "m_flCustomAutoExposureMin"));
                 }
 
-                if (SetEntProp(tonemap, Prop_Send, "m_bUseCustomAutoExposureMax", GetEntProp(master, Prop_Send, "m_bUseCustomAutoExposureMax")))
+                if (GetEntProp(master, Prop_Send, "m_bUseCustomAutoExposureMax"))
                 {
                     SetEntPropFloat(tonemap, Prop_Send, "m_flCustomAutoExposureMax", GetEntPropFloat(master, Prop_Send, "m_flCustomAutoExposureMax"));
                 }
